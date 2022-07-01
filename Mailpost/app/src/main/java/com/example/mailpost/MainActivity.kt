@@ -1,26 +1,46 @@
 package com.example.mailpost
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.databinding.DataBindingUtil
+import com.example.mailpost.databinding.ActivityMainBinding
+import com.example.mailpost.ui.home.HomeFragment
+import com.example.mailpost.ui.letterbox.LetterBoxFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        with(binding) {
+            navView.setOnNavigationItemSelectedListener(this@MainActivity)
+            supportFragmentManager.beginTransaction().add(R.id.nav_host_fragment, HomeFragment())
+                .commitAllowingStateLoss()
+        }
+
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.nav_host_fragment, HomeFragment()).commitAllowingStateLoss()
+            }
+            R.id.navigation_message -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.nav_host_fragment, LetterBoxFragment()).commitAllowingStateLoss()
+            }
+            R.id.navigation_box -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.nav_host_fragment, LetterBoxFragment()).commitAllowingStateLoss()
+            }
+        }
+
+        return false
     }
 }
